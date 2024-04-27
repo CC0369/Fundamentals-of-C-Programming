@@ -39,7 +39,7 @@ typedef struct {
 
 
 /************
-This function prints the user menu
+This function prints the user menu (Alexia)
 inputs: none 
 outputs: none
 *************/ 
@@ -50,7 +50,7 @@ void printMenu(void){
 }
 
 /************
-This function gets the total list of races 
+This function gets the total list of races (Ji Hyun)
 inputs: from data  
 outputs: list of all races over the period  
 *************/ 
@@ -61,7 +61,7 @@ void displayAllResults(racesList *list){
 
 
 /************
-This function adds to the total list of races
+This function adds to the total list of races (Darren)
 inputs: race structs from user   
 outputs: none   
 *************/ 
@@ -71,7 +71,7 @@ void addRaceResults(racesList *list){
 }
 
 /************
-This function removes the last race from total list of races
+This function removes the last race from total list of races (Aiden)
 inputs: race structs from user   
 outputs: none   
 *************/ 
@@ -82,7 +82,7 @@ void removeRaceResults(racesList *list){
 
 
 /************
-This function saves the race results to the database 
+This function saves the race results to the database (Alexia)
 inputs: race list from user   
 outputs: none   
 *************/ 
@@ -94,7 +94,7 @@ void saveRaceResultstoDatabase(racesList *list, const char *filename){
 
 
 /************
-This function prints all of the drivers, and their results from each race in the selected year
+This function prints all of the drivers, and their results from each race in the selected year (Ji Hyun)
 inputs: year  
 outputs: list of all drivers, with their podium stats and points. 
 *************/ 
@@ -104,7 +104,7 @@ void displayAllDrivers(driverList *list){
 }
 
 /************
-This function displays the driver with the most points for the selected year
+This function displays the driver with the most points for the selected year (Darren)
 inputs: year  
 outputs: the world champion driver with a photo
 *************/ 
@@ -114,7 +114,7 @@ void calculateWorldChampion(){
 }
 
 /************
-This function prints all teams, and their results in the selected year. 
+This function prints all teams, and their results in the selected year. (Aiden)
 inputs: year 
 outputs: list of the teams of that particular year, with their constructors points. 
 *************/ 
@@ -124,7 +124,7 @@ void displayAllTeams(){
 }
 
 /************
-This function displays the team with the most points for the selected year
+This function displays the team with the most points for the selected year (Ji Hyun)
 inputs: year  
 outputs: the world champion team, with a photo
 *************/ 
