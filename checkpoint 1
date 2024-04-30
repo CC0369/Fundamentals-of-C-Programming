@@ -1,8 +1,33 @@
 #include <stido.h>
+#include <curl/curl.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAX_DRIVER_SIZE 20;
 
 char dbFileName[] = "dataBase";
+
+void fetchDataFromAPI(const char *url) {
+    CURL *curl;
+    CURLcode res;
+
+    curl = curl_easy_init();
+    if(curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        res = curl_easy_perform(curl);
+
+        if(res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        curl_easy_cleanup(curl);
+    }
+}
+
+int main() {
+    const char *url = "http://ergast.com/api/f1/drivers.json?callback=myParser";
+    fetchDataFromAPI(url);
+    return 0;
+}
 
 typedef struct driver{
     char firstName[10];
