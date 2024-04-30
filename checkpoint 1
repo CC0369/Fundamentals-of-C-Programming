@@ -124,7 +124,7 @@ void displayAllTeams(){
 }
 
 /************
-This function displays the team with the most points for the selected year (Ji Hyun)
+This function displays the team with the most points for the selected year (Alexia)
 inputs: year  
 outputs: the world champion team, with a photo
 *************/ 
