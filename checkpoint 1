@@ -1,39 +1,18 @@
-#include <stido.h>
-#include <curl/curl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_DRIVER_SIZE 20;
 
-char dbFileName[] = "dataBase";
+#define MAX_DRIVER_SIZE 50
+#define MAX_SEASON_SIZE 50
+#define MAX_RACES 50
 
-void fetchDataFromAPI(const char *url) {
-    CURL *curl;
-    CURLcode res;
-
-    curl = curl_easy_init();
-    if(curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        res = curl_easy_perform(curl);
-
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-
-        curl_easy_cleanup(curl);
-    }
-}
-
-int main() {
-    const char *url = "http://ergast.com/api/f1/drivers.json?callback=myParser";
-    fetchDataFromAPI(url);
-    return 0;
-}
 
 typedef struct driver{
     char firstName[10];
     char lastName[10]; 
     int points; 
-    char number[2];
+    char number[3];
     char team[10];
     int age; 
 } driver_t; 
@@ -41,11 +20,11 @@ typedef struct driver{
 typedef struct {
     driver_t driverList[MAX_DRIVER_SIZE]; 
     int number_of_drivers; 
-}driverList;
+} driverList;
 
 typedef struct race{
-    char date[8];
-    char location[15];
+    char date[11];
+    char location[30];
     char raceNumber[10];
     int numberOfLaps; 
     char P1[10];
@@ -57,10 +36,12 @@ typedef struct race{
 typedef struct {
     race_t racesList[MAX_SEASON_SIZE]; 
     int number_of_races; 
-}racesList;
+}   racesList;
 
 
 
+void printMenu(racesList *list);
+void displayAllResults(int number_of_races, race_t *races);
 
 
 /************
@@ -69,9 +50,55 @@ inputs: none
 outputs: none
 *************/ 
 
-void printMenu(void){
-    printf("Welcome to the F1 race results finder\n"); 
-    
+void printMenu(racesList *list){
+    printf("Welcome to the F1 race results finder\n");
+    printf("=======================================\n");
+    printf("1. Display all race results\n");
+    printf("2. Add race results\n");
+    printf("3. Remove race results\n");
+    printf("4. Save race results to database\n");
+    printf("5. Display all drivers and their results\n");
+    printf("6. Calculate World Champion\n");
+    printf("7. Display all teams and their results\n");
+    printf("8. Calculate Constructors' Champion\n");
+    printf("9. Exit\n");
+    printf("=======================================\n");
+    printf("Please enter your choice (1-9): ");
+
+    int choice;
+    scanf("%d", &choice);
+
+    switch(choice) {
+        case 1:
+            displayAllResults(list->number_of_races, list->racesList);
+            break;
+        case 2:
+            printf("choice 1");
+            break;
+        case 3:
+            printf("choice 1");
+            break;
+        case 4:
+            printf("choice 1");
+            break;
+        case 5:
+            printf("choice 1");
+            break;
+        case 6:
+            printf("choice 1");
+            break;
+        case 7:
+            printf("choice 1");
+            break;
+        case 8:
+            printf("choice 1");
+            break;
+        case 9:
+            exit(0);
+        default:
+            printf("Invalid choice. Please enter a number between 1 and 9.\n");
+            break;
+    }
 }
 
 /************
@@ -80,8 +107,20 @@ inputs: from data
 outputs: list of all races over the period  
 *************/ 
 
-void displayAllResults(racesList *list){
-
+void displayAllResults(int number_of_races, race_t *races){
+    printf("All Race Results:\n");
+    FILE *file = fopen("f1driver.txt", "rb");
+    if (file == NULL) {
+        printf("Error: Unable to open file.\n");
+        return;
+    }
+    driver_t racelist[MAX_RACES];
+    fread(racelist, sizeof(driver_t), number_of_races, file);
+    fclose(file);
+    printf("%-10s %-10s %-10s %-10s %-10s\n", "Firstname", "Lastname", "Points", "Number", "Team");
+    for (int i = 0; i < number_of_races; i++) {
+        printf("%-10s %-10s %-10d %-10d %-10s\n", racelist[i].firstName, racelist[i].lastName, racelist[i].points, racelist[i].number, racelist[i].team);
+    }
 }
 
 
@@ -125,7 +164,7 @@ outputs: list of all drivers, with their podium stats and points.
 *************/ 
 
 void displayAllDrivers(driverList *list){
-    
+
 }
 
 /************
@@ -157,3 +196,9 @@ outputs: the world champion team, with a photo
 void calculateConstructorsChampion(){
 
 }
+
+int main() {
+    racesList list;
+    printMenu(&list);
+}
+
