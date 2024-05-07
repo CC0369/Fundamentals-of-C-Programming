@@ -6,3 +6,6 @@ This project builds a program that stores and displays historical results from p
 
 This project utilises the Formula One API from Postman 
 https://documenter.getpostman.com/view/11586746/SztEa7bL
+
+
+when compiling, use gcc -o checkpoint_1.out checkpoint_1.c -lcurl
