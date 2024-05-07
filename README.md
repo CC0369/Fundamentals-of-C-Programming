@@ -9,3 +9,4 @@ https://documenter.getpostman.com/view/11586746/SztEa7bL
 
 
 when compiling, use gcc -o checkpoint1.out checkpoint1.c -lcurl
+then ./checkpoint1.out
