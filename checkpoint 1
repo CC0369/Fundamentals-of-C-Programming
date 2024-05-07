@@ -31,7 +31,7 @@ int main() {
 
 typedef struct driver{
     char firstName[10];
-    char sirName[10]; 
+    char lastName[10]; 
     int points; 
     char number[2];
     char team[10];
