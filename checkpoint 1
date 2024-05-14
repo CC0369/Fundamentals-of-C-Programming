@@ -50,7 +50,6 @@ int main(void){
     int choice;
     do {
         printMenu(&races, &drivers);
-        printf("Enter your choice>\n");
         scanf("%d", &choice);
         switch (choice) {
             case 1:
@@ -95,8 +94,9 @@ outputs: none
 *************/ 
 
 void printMenu(racesList *races, driverList *drivers) {
-    printf("Welcome to the F1 race results finder\n");
-    printf("=======================================\n");
+    printf("----------------------\n");
+    printf("F1 Race Results Finder\n");
+    printf("----------------------\n");
     printf("1. Display all race results\n");
     printf("2. Add race results\n");
     printf("3. Remove race results\n");
@@ -105,8 +105,7 @@ void printMenu(racesList *races, driverList *drivers) {
     printf("6. Calculate World Champion\n");
     printf("7. Display all teams and their results\n");
     printf("8. Calculate Constructors' Champion\n");
-    printf("9. Exit\n");
-    printf("=======================================\n");
+    printf("9. Exit\n \n");
     printf("Please enter your choice (1-9): ");
 }
 
@@ -119,7 +118,7 @@ outputs: list of all races over the period
 void displayAllResults(int number_of_races, race_t *races, driverList *drivers) {
     FILE *file = fopen("f1driver.txt", "r");
     if (file == NULL) {
-        printf("Error: Unable to open file.\n");
+        printf("Unable to open file.\n");
         return;
     }
 
@@ -150,11 +149,11 @@ void displayAllResults(int number_of_races, race_t *races, driverList *drivers) 
 
         drivers->number_of_drivers++;
     }
-
     fclose(file);
-
-    printf("All Results:\n");
+    printf("\nAll Results\n");
+    printf("-------------------------------------------------------------------------\n");
     printf("%-20s %-20s %-10s %-10s %-20s\n", "Firstname", "Lastname", "Points", "Number", "Team");
+    printf("-------------------------------------------------------------------------\n");
     for (int i = 0; i < drivers->number_of_drivers; i++) {
         printf("%-20s %-20s %-10d %-10d %-20s\n", drivers->driverList[i].firstName, drivers->driverList[i].lastName, drivers->driverList[i].points, drivers->driverList[i].number, drivers->driverList[i].team);
     }
@@ -200,10 +199,10 @@ outputs: list of all drivers, with their podium stats and points.
 *************/ 
 
 void displayAllDrivers(driverList *drivers) {
-    printf("All Drivers:\n");
+    printf("\nAll Drivers\n");
     FILE *file = fopen("f1driver.txt", "r");
     if (file == NULL) {
-        printf("Error: Unable to open file.\n");
+        printf("Unable to open file.\n");
         return;
     }
 
@@ -257,10 +256,10 @@ void displayAllDrivers(driverList *drivers) {
             drivers->number_of_drivers++;
         }
     }
-
     fclose(file);
-
+    printf("-------------------------------------------------------------------------\n");
     printf("%-20s %-20s %-10s %-10s %-20s\n", "Firstname", "Lastname", "Points", "Number", "Team");
+    printf("-------------------------------------------------------------------------\n");
     for (int i = 0; i < drivers->number_of_drivers; i++) {
         printf("%-20s %-20s %-10d %-10d %-20s\n", drivers->driverList[i].firstName,
                drivers->driverList[i].lastName, drivers->driverList[i].points,
