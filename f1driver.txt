@@ -1,4 +1,5 @@
 'Carlos','Sainz',246,55,'Ferrari'
+'Carlos','Sainz',300,2,'Ferrari'
 'Max','Verstappen', 454,1,'Red Bull' 
 'Sergio','Perez',305,11,'Red Bull' 
 'George','Russell',275,63,'Mercedes'
