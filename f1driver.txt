@@ -1,26 +1,9 @@
-'Carlos','Sainz',246,55,'Ferrari'
-'Carlos','Sainz',300,2,'Ferrari'
-'Max','Verstappen', 454,1,'Red Bull' 
-'Sergio','Perez',305,11,'Red Bull' 
-'George','Russell',275,63,'Mercedes'
-'Lewis','Hamilton',240,44,'Mercedes'
-'Lando','Norris',122,4,'Mclaren'
-'Esteban','Ocon',92,31,'Alpine'
-'Charles','Leclerc',308,16,'Ferrari'
-'Fernando','Alonso',81,14,'Alpine'
-'Valtteri','Bottas',49,77,'Alfa Romeo'
-'Daniel','Ricciardo',37,3,'Mclaren'
-'Sebastian','Vettel',37,5,'Aston Martin'
-'Kevin','Magnussen',25,20,'Haas'
-'Pierre','Gasly',23,10,'AlphaTauri'
-'Lance','Stroll',18,18,'Aston Martin'
-'Mick', 'Schumacher',12,47,'Haas'
-'Yuki','Tsunoda',12,22,'AlphaTauri'
-'Zhou','Guanyu',6,12,'Alpha Romeo'
-'Alex','Albon',4,23,'Williams'
-'Nick','Latifi',2,6,'Williams'
-
-
-
-
-
+Carlos,Sainz,246,55,Ferrari
+Carlos,Sainz,300,55,Ferrari
+Sergio,Perez,305,11,Red Bull 
+George,Russell,275,63,Mercedes
+Lewis,Hamilton,240,44,Mercedes
+Lando,Norris,122,4,Mclaren
+Esteban,Ocon,92,31,Alpine
+Charles,Leclerc,308,16,Ferrari
+Fernando,Alonso,81,14,Alpine
