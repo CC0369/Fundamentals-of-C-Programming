@@ -1,4 +1,3 @@
-'firstname','lastname','points','number','team'
 'Carlos','Sainz',246,55,'Ferrari'
 'Max','Verstappen', 454,1,'Red Bull' 
 'Sergio','Perez',305,11,'Red Bull' 
