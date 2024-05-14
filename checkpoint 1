@@ -41,11 +41,14 @@ typedef struct {
 
 void printMenu(racesList *races, driverList *drivers);
 void displayAllResults(int number_of_races, race_t *races, driverList *drivers);
+void addRaceResults(racesList *list);
 void displayAllDrivers(driverList *drivers);
+void calculateWorldChampion(int year); 
+
 
 
 int main(void){
-    racesList races;
+    racesList races = { .number_of_races = 0 };
     driverList drivers;
     int choice;
     do {
@@ -56,7 +59,7 @@ int main(void){
                 displayAllResults(races.number_of_races, races.racesList, &drivers);
                 break;
             case 2:
-                printf("choice 1");
+                addRaceResults(&races);
                 break;
             case 3:
                 printf("choice 1");
@@ -68,7 +71,7 @@ int main(void){
                 displayAllDrivers(&drivers);
                 break;
             case 6:
-                printf("choice 1");
+                calculateWorldChampion(2024);
                 break;
             case 7:
                 printf("choice 1");
@@ -165,8 +168,29 @@ inputs: race structs from user
 outputs: none   
 *************/ 
 
-void addRaceResults(racesList *list){
+void addRaceResults(racesList *list) {
+    if (list->number_of_races >= MAX_SEASON_SIZE) {
+        printf("Error: Maximum number of races reached.\n");
+        return;
+    }
+    printf("Enter date (format: YYYYMMDD): ");
+    scanf("%8s", list->racesList[list->number_of_races].date);
+    printf("Enter location: ");
+    scanf("%14s", list->racesList[list->number_of_races].location);
+    printf("Enter race number: ");
+    scanf("%9s", list->racesList[list->number_of_races].raceNumber);
+    printf("Enter number of laps: ");
+    scanf("%d", &list->racesList[list->number_of_races].numberOfLaps);
+    printf("Enter P1: ");
+    scanf("%9s", list->racesList[list->number_of_races].P1);
+    printf("Enter P2: ");
+    scanf("%9s", list->racesList[list->number_of_races].P2);
+    printf("Enter P3: ");
+    scanf("%9s", list->racesList[list->number_of_races].P3);
 
+    list->number_of_races++;
+
+    printf("Race added successfully.\n");
 }
 
 /************
@@ -268,14 +292,51 @@ void displayAllDrivers(driverList *drivers) {
 }
 
 /************
-This function displays the driver with the most points for the selected year (Darren)
+This function displays the driver with the most points (Darren)
 inputs: year  
-outputs: the world champion driver with a photo
+outputs: the world champion driver
 *************/ 
 
-void calculateWorldChampion(){
+void calculateWorldChampion(int year) {
+    FILE *file = fopen("f1driver.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
 
+    // Initialize variables to store the champion's name and points
+    char championFirstName[20];
+    char championLastName[20];
+    int maxPoints = 0;
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        char firstName[20], lastName[20], team[20];
+        int points, number;
+
+        // Parse the line to extract driver information
+        if (sscanf(line, "%19[^,],%19[^,],%d,%d,%19[^,\n]", firstName, lastName, &points, &number, team) == 5) {
+            // Check if the current driver has more points than the current maxPoints
+            if (points > maxPoints) {
+                maxPoints = points;
+                strcpy(championFirstName, firstName);
+                strcpy(championLastName, lastName);
+            }
+        }
+    }
+
+    fclose(file);
+
+    // Print the world champion
+    if (maxPoints > 0) {
+        printf("The World Champion for %d is %s %s with %d points.\n",
+               year, championFirstName, championLastName, maxPoints);
+    } else {
+        printf("No drivers found.\n");
+    }
 }
+
+
 
 /************
 This function prints all teams, and their results in the selected year. (Aiden)
