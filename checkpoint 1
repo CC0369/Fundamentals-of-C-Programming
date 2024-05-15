@@ -15,6 +15,7 @@ typedef struct driver{
     int number;
     char team[10];
     int age; 
+    int year;
 } driver_t; 
 
 typedef struct {
@@ -199,8 +200,13 @@ inputs: race structs from user
 outputs: none   
 *************/ 
 
-void removeRaceResults(racesList *list){
-
+void removeRaceResults(racesList *list) {
+    if (list->number_of_races > 0) {
+        list->number_of_races--;
+        printf("Last race results removed successfully.\n");
+    } else {
+        printf("No races to remove.\n");
+    }
 }
 
 
@@ -344,8 +350,14 @@ inputs: year
 outputs: list of the teams of that particular year, with their constructors points. 
 *************/ 
 
-void displayAllTeams(){
-
+void displayAllTeams(driverList *drivers, int year){
+    printf("ALL Team Results in year %d\n", year);
+    for(int i = 0; i < drivers->number_of_drivers; i++){
+        if(drivers->driverList[i].year == year){
+            printf("%s\n", drivers->driverList[i].team);
+            printf("%d\n", drivers->driverList[i].points);
+        }
+    }
 }
 
 /************
