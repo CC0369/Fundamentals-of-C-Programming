@@ -6,6 +6,11 @@
 #define MAX_DRIVER_SIZE 50
 #define MAX_SEASON_SIZE 50
 #define MAX_RACES 50
+#define MAX_RACE_NUMBER_LENGTH 10
+#define MAX_DIGITS 3
+#define MAX_ENCODED_DIGIT_LENGTH 3
+#define MAX_ENCODED_RACE_POSITION_LENGTH (MAX_ENCODED_DIGIT_LENGTH * MAX_DIGITS)
+#define MAX_ENCODED_RACE_POSITIONS_LENGTH (MAX_ENCODED_RACE_POSITION_LENGTH * 3)
 
 
 typedef struct driver{
@@ -23,20 +28,21 @@ typedef struct {
     int number_of_drivers; 
 } driverList;
 
-typedef struct race{
+typedef struct race {
     char date[11];
     char location[30];
-    char raceNumber[10];
+    char raceNumber[MAX_RACE_NUMBER_LENGTH];
     int numberOfLaps; 
-    char P1[10];
-    char P2[10];
-    char P3[10]; 
+    char P1[20];
+    char P2[20];
+    char P3[20]; 
 
-} race_t; 
+} race_t;
 
 typedef struct {
     race_t racesList[MAX_SEASON_SIZE]; 
-    int number_of_races; 
+    int number_of_races;
+    int numResults; 
 }   racesList;
 
 
@@ -45,6 +51,7 @@ void displayAllResults(int number_of_races, race_t *races, driverList *drivers);
 void addRaceResults(racesList *list);
 void displayAllDrivers(driverList *drivers);
 void calculateWorldChampion(int year); 
+void encodeRaceData(const char *filename);
 
 
 
@@ -66,7 +73,7 @@ int main(void){
                 printf("choice 1");
                 break;
             case 4:
-                printf("choice 1");
+                encodeRaceData("race_results.bin");
                 break;
             case 5:
                 displayAllDrivers(&drivers);
@@ -216,7 +223,84 @@ inputs: race list from user
 outputs: none   
 *************/ 
 
-void saveRaceResultstoDatabase(racesList *list, const char *filename){
+int encodeDigit(int digit) {
+    if (digit < 10) {
+        return 0x80 | (digit << 4);
+    } else {
+        return 0xC0 | ((digit / 10) << 4);
+    }
+}
+
+void saveRaceResultstoDatabase(race_t *races, int numRaces, const char *filename) {
+    int numEncodedBytes = numRaces * (sizeof(races->date) + sizeof(races->location) + sizeof(races->raceNumber) + sizeof(races->numberOfLaps) + MAX_ENCODED_RACE_POSITIONS_LENGTH * 3);
+
+    char *encodedRaces = malloc(numEncodedBytes);
+
+    int offset = 0;
+    for (int i = 0; i < numRaces; i++) {
+        race_t race = races[i];
+
+        memcpy(encodedRaces + offset, race.date, sizeof(race.date));
+        offset += sizeof(race.date);
+
+        memcpy(encodedRaces + offset, race.location, sizeof(race.location));
+        offset += sizeof(race.location);
+
+        memcpy(encodedRaces + offset, race.raceNumber, sizeof(race.raceNumber));
+        offset += sizeof(race.raceNumber);
+
+        int numLapsEncoded = encodeDigit(race.numberOfLaps / 100) << 4;
+        numLapsEncoded |= encodeDigit(race.numberOfLaps % 100 / 10) << 2;
+        numLapsEncoded |= encodeDigit(race.numberOfLaps % 10);
+        memcpy(encodedRaces + offset, &numLapsEncoded, sizeof(numLapsEncoded));
+        offset += sizeof(numLapsEncoded);
+
+        memcpy(encodedRaces + offset, race.P1, sizeof(race.P1));
+        offset += sizeof(race.P1);
+
+        memcpy(encodedRaces + offset, race.P2, sizeof(race.P2));
+        offset += sizeof(race.P2);
+
+        memcpy(encodedRaces + offset, race.P3, sizeof(race.P3));
+        offset += sizeof(race.P3);
+
+    FILE *file = fopen(filename, "wb");
+    if (file != NULL) {
+        fwrite(encodedRaces, 1, numEncodedBytes, file);
+        fclose(file);
+    }
+
+    free(encodedRaces);
+}
+}
+
+void encodeRaceData(const char *filename){
+    race_t race; 
+
+    printf("Enter the race date(yyyy-mm-dd): ");
+    scanf("%10s", race.date);
+
+    printf("Enter the race location: ");
+    scanf("%29s", race.location);
+
+    printf("Enter the race number: ");
+    scanf("%9s", race.raceNumber);
+
+    printf("Enter the number of laps: ");
+    scanf("%d", &race.numberOfLaps);
+    
+    printf("Enter the Driver in First Position: ");
+    scanf("%20s", race.P1);
+
+    printf("Enter the Driver in Second Position: ");
+    scanf("%20s", race.P2);
+
+    printf("\nEnter the Driver in Third Position: ");
+    scanf("%20s", race.P3);
+
+    race_t races[1];
+    races[0] = race;
+    saveRaceResultstoDatabase(races, 1, filename);
 
 }
 
@@ -360,12 +444,3 @@ void displayAllTeams(driverList *drivers, int year){
     }
 }
 
-/************
-This function displays the team with the most points for the selected year (Alexia)
-inputs: year  
-outputs: the world champion team, with a photo
-*************/ 
-
-void calculateConstructorsChampion(){
-
-}
