@@ -19,7 +19,6 @@ typedef struct driver{
     int points; 
     int number;
     char team[10];
-    int age; 
     int year;
 } driver_t; 
 
@@ -48,7 +47,7 @@ typedef struct {
 
 void printMenu(racesList *races, driverList *drivers);
 void displayAllResults(int number_of_races, race_t *races, driverList *drivers);
-void addRaceResults(racesList *list);
+void addRaceResults(driverList *list);
 void displayAllDrivers(driverList *drivers);
 void calculateWorldChampion(int year); 
 void encodeRaceData(const char *filename);
@@ -56,8 +55,11 @@ void encodeRaceData(const char *filename);
 
 
 int main(void){
-    racesList races = { .number_of_races = 0 };
+    racesList races;
     driverList drivers;
+    drivers.number_of_drivers = 0;
+    races.number_of_races = 0;
+   
     int choice;
     do {
         printMenu(&races, &drivers);
@@ -67,7 +69,7 @@ int main(void){
                 displayAllResults(races.number_of_races, races.racesList, &drivers);
                 break;
             case 2:
-                addRaceResults(&races);
+                addRaceResults(&drivers);
                 break;
             case 3:
                 removeRaceResults(&races);
@@ -96,7 +98,7 @@ int main(void){
                 printf("Invalid choice. Please enter a number between 1 and 9.\n");
                 break;
         }
-    } while (choice != 6);
+    } while (choice != 9);
     return 0;
 }
 
@@ -179,29 +181,41 @@ inputs: race structs from user
 outputs: none   
 *************/ 
 
-void addRaceResults(racesList *list) {
-    if (list->number_of_races >= MAX_SEASON_SIZE) {
-        printf("Error: Maximum number of races reached.\n");
+void addRaceResults(driverList *list) {
+    if (list->number_of_drivers >= MAX_DRIVER_SIZE) {
+        printf("Error: Maximum number of drivers reached.\n");
         return;
     }
-    printf("Enter date (format: YYYYMMDD): ");
-    scanf("%8s", list->racesList[list->number_of_races].date);
-    printf("Enter location: ");
-    scanf("%14s", list->racesList[list->number_of_races].location);
-    printf("Enter race number: ");
-    scanf("%9s", list->racesList[list->number_of_races].raceNumber);
-    printf("Enter number of laps: ");
-    scanf("%d", &list->racesList[list->number_of_races].numberOfLaps);
-    printf("Enter P1: ");
-    scanf("%9s", list->racesList[list->number_of_races].P1);
-    printf("Enter P2: ");
-    scanf("%9s", list->racesList[list->number_of_races].P2);
-    printf("Enter P3: ");
-    scanf("%9s", list->racesList[list->number_of_races].P3);
 
-    list->number_of_races++;
+    driver_t newDriver;
 
-    printf("Race added successfully.\n");
+    printf("Enter first name: ");
+    scanf("%9s", newDriver.firstName);
+    printf("Enter last name: ");
+    scanf("%9s", newDriver.lastName);
+    printf("Enter points: ");
+    scanf("%d", &newDriver.points);
+    printf("Enter driver number: ");
+    scanf("%d", &newDriver.number);
+    printf("Enter team: ");
+    scanf("%9s", newDriver.team);
+    printf("Enter year: ");
+    scanf("%d", &newDriver.year);
+
+    FILE *file = fopen("f1driver.txt", "a");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fprintf(file, "%s,%s,%d,%d,%s,%d\n", newDriver.firstName, newDriver.lastName, newDriver.points, newDriver.number, newDriver.team, newDriver.year);
+
+    fclose(file);
+
+    list->driverList[list->number_of_drivers] = newDriver;
+    list->number_of_drivers++;
+
+    printf("Race result added successfully.\n");
 }
 
 /************
@@ -446,6 +460,5 @@ void displayAllTeams(driverList *drivers, int year){
         }
     }
 }
-
 
 
