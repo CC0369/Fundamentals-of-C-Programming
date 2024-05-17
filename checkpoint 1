@@ -70,7 +70,7 @@ int main(void){
                 addRaceResults(&races);
                 break;
             case 3:
-                printf("choice 1");
+                removeRaceResults(&races);
                 break;
             case 4:
                 encodeRaceData("race_results.bin");
@@ -82,7 +82,10 @@ int main(void){
                 calculateWorldChampion(2024);
                 break;
             case 7:
-                printf("choice 1");
+                int year;
+                printf("Year: ");
+                scanf("%d", &year);
+                displayAllTeams(&drivers, year);
                 break;
             case 8:
                 printf("choice 1");
@@ -443,4 +446,6 @@ void displayAllTeams(driverList *drivers, int year){
         }
     }
 }
+
+
 
