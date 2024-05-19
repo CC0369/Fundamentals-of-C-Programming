@@ -192,19 +192,47 @@ void addRaceResults(driverList *list) {
     }
 
     driver_t newDriver;
+    int validInput = 0;
 
     printf("Enter first name: ");
     scanf("%9s", newDriver.firstName);
     printf("Enter last name: ");
     scanf("%9s", newDriver.lastName);
-    printf("Enter points: ");
-    scanf("%d", &newDriver.points);
-    printf("Enter driver number: ");
-    scanf("%d", &newDriver.number);
+
+    while (!validInput) {
+        printf("Enter points: ");
+        if (scanf("%d", &newDriver.points) != 1) {
+            printf("Invalid input for points. Please enter an integer.\n");
+            while (getchar() != '\n'); // clear the input buffer
+        } else {
+            validInput = 1;
+        }
+    }
+    validInput = 0;
+
+    while (!validInput) {
+        printf("Enter driver number: ");
+        if (scanf("%d", &newDriver.number) != 1) {
+            printf("Invalid input for driver number. Please enter an integer.\n");
+            while (getchar() != '\n'); // clear the input buffer
+        } else {
+            validInput = 1;
+        }
+    }
+    validInput = 0;
+
     printf("Enter team: ");
     scanf("%9s", newDriver.team);
-    printf("Enter year: ");
-    scanf("%d", &newDriver.year);
+
+    while (!validInput) {
+        printf("Enter year: ");
+        if (scanf("%d", &newDriver.year) != 1) {
+            printf("Invalid input for year. Please enter an integer.\n");
+            while (getchar() != '\n'); // clear the input buffer
+        } else {
+            validInput = 1;
+        }
+    }
 
     FILE *file = fopen("f1driver.txt", "a");
     if (file == NULL) {
