@@ -51,7 +51,7 @@ void addRaceResults(driverList *list);
 void displayAllDrivers(driverList *drivers);
 void calculateWorldChampion(int year); 
 void encodeRaceData(const char *filename);
-void displayAllTeams(driverList *drivers, int year);
+void displayAllTeams(int year);
 void removeRaceResults(driverList *list);
 
 int main(void){
@@ -87,7 +87,7 @@ int main(void){
             case 7:
                 printf("Year: ");
                 scanf("%d", &year);
-                displayAllTeams(&drivers, year);
+                displayAllTeams(year);
                 break;
             case 8:
                 printf("choice 1");
@@ -254,18 +254,79 @@ void addRaceResults(driverList *list) {
 
 /************
 This function removes the last race from total list of races (Aiden)
-inputs: race structs from user   
+inputs: driverList structs from user   
 outputs: none   
 *************/ 
 
 void removeRaceResults(driverList *list) {
-    if (list->number_of_drivers > 0) {
-        list->number_of_drivers--;
+    // Open the file for reading
+    FILE *file = fopen("f1driver.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    // Read all lines into a buffer
+    char lines[MAX_DRIVER_SIZE][100];
+    int line_count = 0;
+    while (fgets(lines[line_count], sizeof(lines[line_count]), file) != NULL) {
+        line_count++;
+    }
+    fclose(file);
+
+    // If there are lines to remove, reduce the line count by one
+    if (line_count > 0) {
+        line_count--;
         printf("Last race results removed successfully.\n");
     } else {
         printf("No races to remove.\n");
+        return;
+    }
+
+    // Open the file for writing (truncate the file)
+    file = fopen("f1driver.txt", "w");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    // Write the remaining lines back to the file
+    for (int i = 0; i < line_count; i++) {
+        fputs(lines[i], file);
+    }
+    fclose(file);
+
+    // Update the driverList parameter
+    list->number_of_drivers = 0;
+    for (int i = 0; i < line_count; i++) {
+        char *token = strtok(lines[i], ",");
+        if (token == NULL) continue;
+        strcpy(list->driverList[list->number_of_drivers].firstName, token);
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        strcpy(list->driverList[list->number_of_drivers].lastName, token);
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        list->driverList[list->number_of_drivers].points = atoi(token);
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        list->driverList[list->number_of_drivers].number = atoi(token);
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        strcpy(list->driverList[list->number_of_drivers].team, token);
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        list->driverList[list->number_of_drivers].year = atoi(token);
+
+        list->number_of_drivers++;
     }
 }
+
 
 
 /************
@@ -364,20 +425,20 @@ outputs: list of all drivers, with their podium stats and points.
 *************/ 
 
 void displayAllDrivers(driverList *drivers) {
-    //open file
+    printf("\nAll Drivers\n");
     FILE *file = fopen("f1driver.txt", "r");
     if (file == NULL) {
         printf("Unable to open file.\n");
         return;
     }
-    //initialise number of drivers to 0
+
     drivers->number_of_drivers = 0;
-    char line[100];
-    //read each line from file and separate
+
+    char line[256];
     while (fgets(line, sizeof(line), file)) {
         char *token = strtok(line, ",");
         if (token == NULL) continue;
-        //store driver data
+
         char firstName[20];
         char lastName[20];
         strcpy(firstName, token);
@@ -400,19 +461,18 @@ void displayAllDrivers(driverList *drivers) {
         token = strtok(NULL, ",");
         if (token == NULL) continue;
         strcpy(team, token);
-        //check if driver exists in the list
+
         int i;
         int found = 0;
         for (i = 0; i < drivers->number_of_drivers; i++) {
             if (strcmp(drivers->driverList[i].firstName, firstName) == 0 &&
                 strcmp(drivers->driverList[i].lastName, lastName) == 0) {
-                //if found, add up the points
                 drivers->driverList[i].points += points;
                 found = 1;
                 break;
             }
         }
-        //if driver not found, add to list
+
         if (!found) {
             strcpy(drivers->driverList[drivers->number_of_drivers].firstName, firstName);
             strcpy(drivers->driverList[drivers->number_of_drivers].lastName, lastName);
@@ -422,9 +482,7 @@ void displayAllDrivers(driverList *drivers) {
             drivers->number_of_drivers++;
         }
     }
-    //close the file and print results
     fclose(file);
-    printf("\nAll Drivers\n");
     printf("-------------------------------------------------------------------------\n");
     printf("%-20s %-20s %-10s %-10s %-20s\n", "Firstname", "Lastname", "Points", "Number", "Team");
     printf("-------------------------------------------------------------------------\n");
@@ -488,12 +546,58 @@ inputs: year
 outputs: list of the teams of that particular year, with their constructors points. 
 *************/ 
 
-void displayAllTeams(driverList *drivers, int year){
-    printf("ALL Team Results in year %d\n", year);
-    for(int i = 0; i < drivers->number_of_drivers; i++){
-        if(drivers->driverList[i].year == year){
-            printf("%s: %d\n", drivers->driverList[i].team, drivers->driverList[i].points);
+void displayAllTeams(int year) {
+    // Open the file for reading
+    FILE *file = fopen("f1driver.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    // Initialize a structure to hold team points
+    typedef struct {
+        char team[20];
+        int points;
+    } teamPoints_t;
+
+    teamPoints_t teamPoints[MAX_DRIVER_SIZE];
+    int teamCount = 0;
+
+    // Read the file line by line
+    char line[100];
+    while (fgets(line, sizeof(line), file)) {
+        char firstName[10], lastName[10], team[20];
+        int points, number, driverYear;
+
+        // Parse the line
+        sscanf(line, "%9[^,],%9[^,],%d,%d,%19[^,],%d", firstName, lastName, &points, &number, team, &driverYear);
+
+        // If the driver year matches the input year, process the team points
+        if (driverYear == year) {
+            int found = 0;
+            for (int i = 0; i < teamCount; i++) {
+                if (strcmp(teamPoints[i].team, team) == 0) {
+                    teamPoints[i].points += points;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found && teamCount < MAX_DRIVER_SIZE) {
+                strcpy(teamPoints[teamCount].team, team);
+                teamPoints[teamCount].points = points;
+                teamCount++;
+            }
         }
     }
-}
+    fclose(file);
 
+    // Display the teams and their points
+    printf("\nTeam Results for Year %d\n", year);
+    printf("---------------------------------\n");
+    printf("%-20s %-10s\n", "Team", "Points");
+    printf("---------------------------------\n");
+    for (int i = 0; i < teamCount; i++) {
+        printf("%-20s %-10d\n", teamPoints[i].team, teamPoints[i].points);
+    }
+    printf("---------------------------------\n");
+}
