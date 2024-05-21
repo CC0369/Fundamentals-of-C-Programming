@@ -1,6 +1,13 @@
 /*Project Group 32 Lab 07 Tuesday 17:00
 
+F1 Race Viewer
 
+Please compile using the following instructions:
+
+1. gcc -o main.out main.c
+2. ./main.out
+
+*/
 
 
 #include <stdio.h>
