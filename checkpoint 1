@@ -90,9 +90,6 @@ int main(void){
                 displayAllTeams(year);
                 break;
             case 8:
-                printf("choice 1");
-                break;
-            case 9:
                 break;
             default:
                 printf("Invalid choice. Please enter a number between 1 and 9.\n");
@@ -120,9 +117,8 @@ void printMenu(racesList *races, driverList *drivers) {
     printf("5. Display all drivers and their results\n");
     printf("6. Calculate World Champion\n");
     printf("7. Display all teams and their results\n");
-    printf("8. Calculate Constructors' Champion\n");
-    printf("9. Exit\n \n");
-    printf("Please enter your choice (1-9): ");
+    printf("8. Exit\n \n");
+    printf("Please enter your choice (1-8): ");
 }
 
 /************
